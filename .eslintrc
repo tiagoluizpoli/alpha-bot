@@ -1,0 +1,73 @@
+{
+  "extends": [
+    "standard-with-typescript",
+    "prettier"
+  ],
+  "plugins": [
+    "prettier"
+  ],
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "rules": {
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto",
+        "printWidth": 100,
+        "useTabs": false,
+        "singleQuote": true,
+        "semi": false
+      }
+    ],
+    "@typescript-eslint/strict-boolean-expressions": "off",
+    "@typescript-eslint/space-before-function-paren": "off",
+    "@typescript-eslint/consistent-type-imports": "off",
+    "@typescript-eslint/no-misused-promises": "off",
+    "@typescript-eslint/no-extraneous-class": "off",
+    "@typescript-eslint/indent": "off",
+    "no-restricted-imports": [
+      "off",
+      {
+        "patterns": [
+          "@/*/*/*"
+        ]
+      }
+    ],
+    "linebreak-style": [
+      "error",
+      "unix"
+    ],
+    "import/order": [
+      "error",
+      {
+        "groups": [
+          "builtin",
+          "external",
+          "internal",
+          "parent",
+          "sibling",
+          "index",
+          "object",
+          "type"
+        ],
+        "newlines-between": "always"
+      }
+    ],
+    "sort-imports": [
+      "error",
+      {
+        "ignoreCase": true,
+        "ignoreDeclarationSort": true
+      }
+    ],
+    "import/default": "off",
+    "import/no-default-export": "error",
+    "import/newline-after-import": [
+      "error",
+      {
+        "count": 1
+      }
+    ]
+  }
+}
