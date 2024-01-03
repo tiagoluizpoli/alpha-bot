@@ -4,4 +4,9 @@ export const config = {
     green: '#34bf36',
     blue: '#347cbf',
   },
+  patterns: {
+    draw: {
+      maxDuration: 5,
+    },
+  },
 };

@@ -24,7 +24,6 @@ export class User extends Entity<UserProps> {
   }
 
   public static create = (props: UserProps, id?: string): User => {
-    const user = new User(props, id);
-    return user;
+    return new User(props, id);
   };
 }
