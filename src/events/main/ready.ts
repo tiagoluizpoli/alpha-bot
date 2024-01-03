@@ -1,6 +1,5 @@
-import { Event } from '../../structs/types/event';
-
-import { client } from '@/src';
+import { Event } from '@/structs/types/event';
+import { client } from '@/main';
 
 export default new Event({
   name: 'ready',

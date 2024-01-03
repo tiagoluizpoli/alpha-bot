@@ -5,7 +5,7 @@ import {
   TextChannel,
 } from 'discord.js';
 
-import { Command } from '@/src/structs/types/command';
+import { Command } from '@/structs/types/command';
 
 export default new Command({
   name: 'message',

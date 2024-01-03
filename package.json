@@ -1,12 +1,12 @@
 {
   "name": "alpha-bot",
   "version": "1.0.0",
-  "main": "dist/index.js",
+  "main": "dist/main/index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "build": "tsup src/index.ts",
-    "start": "tsup src/index.ts && node .",
+    "dev": "tsx watch src/main/index.ts",
+    "build": "tsup src/main/index.ts",
+    "start": "tsup src/main/index.ts && node .",
     "lint": "eslint './src/**/*.ts'"
   },
   "devDependencies": {

@@ -4,6 +4,7 @@
       "ESNext"
     ],
     "rootDir": "src",
+    "baseUrl": "src",
     "paths": {
       "@/*": [
         "./*"
