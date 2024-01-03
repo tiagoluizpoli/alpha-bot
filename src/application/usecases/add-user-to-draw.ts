@@ -6,6 +6,7 @@ import {
   IAddUserToDraw,
   left,
   right,
+  UserAlreadyInDrawEventError,
 } from '@/domain';
 import { IDrawReository } from '@/application';
 
@@ -22,7 +23,12 @@ export class AddUserToDraw implements IAddUserToDraw {
 
     const draw = drawResult.value;
 
-    draw.users?.add(user);
+    const userAlreadyInDrawEvent = draw.users.exists(user);
+    if (userAlreadyInDrawEvent) {
+      return left(new UserAlreadyInDrawEventError());
+    }
+
+    draw.users.add(user);
 
     const updateDrawResult = await this.drawRepository.update(draw);
     if (updateDrawResult.isLeft()) {
