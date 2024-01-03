@@ -1,7 +1,7 @@
-import { config } from 'dotenv'
+import { config } from 'dotenv';
 
-config()
+config();
 
 export const env = {
   botToken: process.env.BOT_TOKEN,
-}
+};
