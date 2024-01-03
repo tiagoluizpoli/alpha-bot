@@ -1,10 +1,8 @@
-import { Entity } from '../core';
-
-import { User } from './user';
+import { Entity, Users } from '@/domain';
 
 export interface TeamProps {
   name: string;
-  users?: User[];
+  users?: Users;
 }
 
 export class Team extends Entity<TeamProps> {
@@ -16,7 +14,7 @@ export class Team extends Entity<TeamProps> {
     return this.props.name;
   }
 
-  get users(): User[] | undefined {
+  get users(): Users | undefined {
     return this.props.users;
   }
 

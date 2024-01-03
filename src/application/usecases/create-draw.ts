@@ -1,4 +1,13 @@
-import { CreateDrawProps, Draw, Either, ICreateDraw, left, right, UnknownError } from '@/domain';
+import {
+  CreateDrawProps,
+  Draw,
+  Either,
+  ICreateDraw,
+  left,
+  right,
+  UnknownError,
+  Users,
+} from '@/domain';
 import { IDrawReository } from '@/application';
 
 export class CreateDraw implements ICreateDraw {
@@ -10,7 +19,7 @@ export class CreateDraw implements ICreateDraw {
     createdBy,
   }: CreateDrawProps): Promise<Either<UnknownError, Draw>> => {
     const draw = Draw.create({
-      users,
+      users: Users.create(users),
       teams,
       createdBy,
     });

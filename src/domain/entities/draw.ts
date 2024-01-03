@@ -1,11 +1,8 @@
-import { Entity } from '../core';
-
-import { Team } from './team';
-import { User } from './user';
+import { Entity, Team, User, Users } from '@/domain';
 
 export interface DrawProps {
   teams?: Team[];
-  users?: User[];
+  users?: Users;
   createdAt?: Date;
   createdBy: User;
 }
@@ -22,7 +19,7 @@ export class Draw extends Entity<DrawProps> {
     return this.props.teams;
   }
 
-  public get users(): User[] | undefined {
+  public get users(): Users | undefined {
     return this.props.users;
   }
 
