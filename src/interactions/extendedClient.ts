@@ -14,8 +14,14 @@ import {
 
 import { env } from '../main/config/env';
 
-import { CommandType, ComponentsButton, ComponentsModal, ComponentsSelect } from './types/command';
-import { EventType } from './types/event';
+import { EventType } from './components/event';
+
+import {
+  CommandType,
+  ComponentsButton,
+  ComponentsModal,
+  ComponentsSelect,
+} from '@/interactions/components';
 
 const fileCondition = (fileName: string): boolean =>
   fileName.endsWith('.ts') || fileName.endsWith('.js');
@@ -67,13 +73,13 @@ export class ExtendedClient extends Client {
   private readonly registerModules = (): void => {
     const slashCommands: ApplicationCommandDataResolvable[] = [];
 
-    const commandsPath = path.join(__dirname, '..', 'commands');
+    const commandsPath = path.join(__dirname, 'commands');
 
     fs.readdirSync(commandsPath).forEach((local) => {
       fs.readdirSync(commandsPath + `/${local}/`)
         .filter(fileCondition)
         .forEach(async (fileName) => {
-          const command: CommandType = (await import(`../commands/${local}/${fileName}`))?.default;
+          const command: CommandType = (await import(`./commands/${local}/${fileName}`))?.default;
           const { name, buttons, selects, modals } = command;
           if (name) {
             this.commands.set(name, command);
@@ -100,14 +106,14 @@ export class ExtendedClient extends Client {
   };
 
   private readonly registerEvents = (): void => {
-    const eventsPath = path.join(__dirname, '..', 'events');
+    const eventsPath = path.join(__dirname, 'events');
 
     fs.readdirSync(eventsPath).forEach((local) => {
       fs.readdirSync(`${eventsPath}/${local}`)
         .filter(fileCondition)
         .forEach(async (fileName) => {
           const { name, once, run }: EventType<keyof ClientEvents> = (
-            await import(`../events/${local}/${fileName}`)
+            await import(`./events/${local}/${fileName}`)
           )?.default;
 
           try {

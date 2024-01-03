@@ -1,6 +1,6 @@
 import { ApplicationCommandType } from 'discord.js';
 
-import { Command } from '@/structs/types/command';
+import { Command } from '@/interactions/components';
 
 export default new Command({
   name: 'mencionar',

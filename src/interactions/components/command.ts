@@ -8,7 +8,7 @@ import {
   StringSelectMenuInteraction,
 } from 'discord.js';
 
-import { ExtendedClient } from '../extendedClient';
+import { ExtendedClient } from '@/interactions/extendedClient';
 
 interface CommandProps {
   client: ExtendedClient;

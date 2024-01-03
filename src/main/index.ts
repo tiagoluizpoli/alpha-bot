@@ -1,4 +1,4 @@
-import { ExtendedClient } from '@/structs/extendedClient';
+import { ExtendedClient } from '@/interactions/extendedClient';
 
 export * from 'colors';
 
