@@ -7,6 +7,7 @@ export interface DrawProps {
   teams?: Team[];
   users?: User[];
   createdAt?: Date;
+  createdBy: User;
 }
 
 export class Draw extends Entity<DrawProps> {
@@ -27,6 +28,10 @@ export class Draw extends Entity<DrawProps> {
 
   public get createdAt(): Date | undefined {
     return this.props.createdAt;
+  }
+
+  public get createdBy(): User | undefined {
+    return this.props.createdBy;
   }
 
   public static create = (props: DrawProps, id?: string): Draw => {
