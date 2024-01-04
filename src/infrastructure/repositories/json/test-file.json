@@ -1,0 +1,72 @@
+[
+  {
+    "_id": "2dab81b5-1522-4f90-86cb-769858f0f058",
+    "props": {
+      "users": {
+        "currentItems": [
+          {
+            "_id": "d149ed43-b475-48fb-9ce6-b9ac140e6f8d",
+            "props": {
+              "userName": "tiagoluizpoli",
+              "displayName": "Tiago Luiz",
+              "joinedAt": "2024-01-04T06:23:54.884Z"
+            }
+          },
+          {
+            "_id": "4983ad4a-52f0-4dc2-b8c5-9d3bd15b1efe",
+            "props": {
+              "userName": "marquin",
+              "displayName": "Marcos Luiz",
+              "joinedAt": "2024-01-04T06:23:54.885Z"
+            }
+          }
+        ],
+        "initial": [
+          {
+            "_id": "d149ed43-b475-48fb-9ce6-b9ac140e6f8d",
+            "props": {
+              "userName": "tiagoluizpoli",
+              "displayName": "Tiago Luiz",
+              "joinedAt": "2024-01-04T06:23:54.884Z"
+            }
+          },
+          {
+            "_id": "4983ad4a-52f0-4dc2-b8c5-9d3bd15b1efe",
+            "props": {
+              "userName": "marquin",
+              "displayName": "Marcos Luiz",
+              "joinedAt": "2024-01-04T06:23:54.885Z"
+            }
+          }
+        ],
+        "new": [],
+        "removed": [],
+        "updated": []
+      },
+      "teams": [
+        {
+          "_id": "c8606ba6-813c-4f77-b614-c30c466bb65c",
+          "props": {
+            "name": "Time  1",
+            "users": {
+              "currentItems": [],
+              "initial": [],
+              "new": [],
+              "removed": [],
+              "updated": []
+            }
+          }
+        }
+      ],
+      "createdBy": {
+        "_id": "e4d8eeaf-00bb-4888-b656-85b36ff9b9ba",
+        "props": {
+          "userName": "tiagoluizpoli",
+          "displayName": "Tiago Luiz",
+          "joinedAt": "2024-01-04T06:23:54.885Z"
+        }
+      },
+      "createdAt": "2024-01-04T06:23:54.885Z"
+    }
+  }
+]
