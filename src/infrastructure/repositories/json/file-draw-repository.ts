@@ -29,9 +29,6 @@ export class JsonFileDrawRepository implements Repositories {
       try {
         const data = fs.readFileSync(this.jsonFile, 'utf-8');
 
-        const drawData = JSON.parse(data) as Draw[];
-        console.log(drawData);
-
         resolve(right(JSON.parse(data) as Draw[]));
       } catch (error) {
         reject(error);
