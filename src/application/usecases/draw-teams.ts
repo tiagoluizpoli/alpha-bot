@@ -14,6 +14,7 @@ import { IGetDrawByIdReository } from '@/application';
 
 export class DrawTeams implements IDrawTeams {
   constructor(private readonly getDrawByIdRepository: IGetDrawByIdReository) {}
+
   execute = async ({ drawId }: DrawTeamsProps): Promise<Either<DrawNotFoundError, Draw>> => {
     const drawResult = await this.getDrawByIdRepository.getById(drawId);
     if (drawResult.isLeft()) {

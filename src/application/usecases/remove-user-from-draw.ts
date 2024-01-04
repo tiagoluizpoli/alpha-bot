@@ -1,4 +1,3 @@
-import { IGetDrawByIdReository, IUpdateDrawReository } from '@/application';
 import {
   Draw,
   DrawNotFoundError,
@@ -7,21 +6,19 @@ import {
   left,
   RemoveUserFromDrawPossibleErrors,
   RemoveUserFromDrawProps,
+  RemoveUserFromDrawRepositories,
   right,
   UserNotFoundInDrawEventError,
 } from '@/domain';
 
 export class RemoveUserFromDraw implements IRemoveUserFromDraw {
-  constructor(
-    private readonly getDrawByIdRepository: IGetDrawByIdReository,
-    private readonly updateDrawRepository: IUpdateDrawReository,
-  ) {}
+  constructor(private readonly repositories: RemoveUserFromDrawRepositories) {}
 
   execute = async ({
     drawId,
     user,
   }: RemoveUserFromDrawProps): Promise<Either<RemoveUserFromDrawPossibleErrors, Draw>> => {
-    const drawResult = await this.getDrawByIdRepository.getById(drawId);
+    const drawResult = await this.repositories.getById(drawId);
 
     if (drawResult.isLeft()) {
       return left(drawResult.value);
@@ -39,7 +36,7 @@ export class RemoveUserFromDraw implements IRemoveUserFromDraw {
       return left(new UserNotFoundInDrawEventError());
     }
 
-    const updateDrawResult = await this.updateDrawRepository.update(draw);
+    const updateDrawResult = await this.repositories.update(draw);
     if (updateDrawResult.isLeft()) {
       return left(updateDrawResult.value);
     }

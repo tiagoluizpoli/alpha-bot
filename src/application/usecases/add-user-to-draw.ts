@@ -1,6 +1,7 @@
 import {
   AddUserToDrawPossibleErrors,
   AddUserToDrawProps,
+  AddUserToDrawRepositories,
   Draw,
   DrawNotFoundError,
   Either,
@@ -9,19 +10,15 @@ import {
   right,
   UserAlreadyInDrawEventError,
 } from '@/domain';
-import { IGetDrawByIdReository, IUpdateDrawReository } from '@/application';
 
 export class AddUserToDraw implements IAddUserToDraw {
-  constructor(
-    private readonly getDrawByIdRepository: IGetDrawByIdReository,
-    private readonly updateDrawRepository: IUpdateDrawReository,
-  ) {}
+  constructor(private readonly repository: AddUserToDrawRepositories) {}
 
   execute = async ({
     drawId,
     user,
   }: AddUserToDrawProps): Promise<Either<AddUserToDrawPossibleErrors, Draw>> => {
-    const drawResult = await this.getDrawByIdRepository.getById(drawId);
+    const drawResult = await this.repository.getById(drawId);
     if (drawResult.isLeft()) {
       return left(drawResult.value);
     }
@@ -38,7 +35,7 @@ export class AddUserToDraw implements IAddUserToDraw {
 
     draw.users.add(user);
 
-    const updateDrawResult = await this.updateDrawRepository.update(draw);
+    const updateDrawResult = await this.repository.update(draw);
     if (updateDrawResult.isLeft()) {
       return left(updateDrawResult.value);
     }

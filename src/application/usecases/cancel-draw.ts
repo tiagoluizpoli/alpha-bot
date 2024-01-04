@@ -1,7 +1,7 @@
-import { IGetDrawByIdReository, IRemoveDrawReository } from '@/application';
 import {
   CancelDrawPossibleErrors,
   CancelDrawProps,
+  CancelDrawRepositories,
   DrawNotFoundError,
   Either,
   ICancelDraw,
@@ -10,15 +10,12 @@ import {
 } from '@/domain';
 
 export class CancelDraw implements ICancelDraw {
-  constructor(
-    private readonly getDrawByIdRepository: IGetDrawByIdReository,
-    private readonly removeDrawRepository: IRemoveDrawReository,
-  ) {}
+  constructor(private readonly repositories: CancelDrawRepositories) {}
 
   execute = async ({
     drawId,
   }: CancelDrawProps): Promise<Either<CancelDrawPossibleErrors, void>> => {
-    const drawResult = await this.getDrawByIdRepository.getById(drawId);
+    const drawResult = await this.repositories.getById(drawId);
     if (drawResult.isLeft()) {
       return left(drawResult.value);
     }
@@ -28,7 +25,7 @@ export class CancelDraw implements ICancelDraw {
       return left(new DrawNotFoundError());
     }
 
-    const removeDrawResult = await this.removeDrawRepository.remove(drawId);
+    const removeDrawResult = await this.repositories.remove(drawId);
 
     if (removeDrawResult.isLeft()) {
       return left(removeDrawResult.value);
