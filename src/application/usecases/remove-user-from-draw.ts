@@ -5,6 +5,7 @@ import {
   Either,
   IRemoveUserFromDraw,
   left,
+  RemoveUserFromDrawPossibleErrors,
   RemoveUserFromDrawProps,
   right,
   UserNotFoundInDrawEventError,
@@ -19,7 +20,7 @@ export class RemoveUserFromDraw implements IRemoveUserFromDraw {
   execute = async ({
     drawId,
     user,
-  }: RemoveUserFromDrawProps): Promise<Either<DrawNotFoundError, Draw>> => {
+  }: RemoveUserFromDrawProps): Promise<Either<RemoveUserFromDrawPossibleErrors, Draw>> => {
     const drawResult = await this.getDrawByIdRepository.execute(drawId);
 
     if (drawResult.isLeft()) {
