@@ -8,10 +8,10 @@ import {
   UnknownError,
   Users,
 } from '@/domain';
-import { IDrawReository } from '@/application';
+import { ICreateDrawReository } from '@/application';
 
 export class CreateDraw implements ICreateDraw {
-  constructor(private readonly drawRepository: IDrawReository) {}
+  constructor(private readonly createdrawRepository: ICreateDrawReository) {}
 
   execute = async ({
     teams,
@@ -24,7 +24,7 @@ export class CreateDraw implements ICreateDraw {
       createdBy,
     });
 
-    const createdDrawResult = await this.drawRepository.create(draw);
+    const createdDrawResult = await this.createdrawRepository.execute(draw);
 
     if (createdDrawResult.isLeft()) {
       return left(createdDrawResult.value);

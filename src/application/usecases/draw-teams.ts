@@ -10,12 +10,12 @@ import {
   Team,
   User,
 } from '@/domain';
-import { IDrawReository } from '@/application';
+import { IGetDrawByIdReository } from '@/application';
 
 export class DrawTeams implements IDrawTeams {
-  constructor(private readonly drawRepository: IDrawReository) {}
+  constructor(private readonly getDrawByIdRepository: IGetDrawByIdReository) {}
   execute = async ({ drawId }: DrawTeamsProps): Promise<Either<DrawNotFoundError, Draw>> => {
-    const drawResult = await this.drawRepository.getById(drawId);
+    const drawResult = await this.getDrawByIdRepository.execute(drawId);
     if (drawResult.isLeft()) {
       return left(drawResult.value);
     }
