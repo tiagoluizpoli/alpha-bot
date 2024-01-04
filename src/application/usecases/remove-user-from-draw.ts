@@ -21,7 +21,7 @@ export class RemoveUserFromDraw implements IRemoveUserFromDraw {
     drawId,
     user,
   }: RemoveUserFromDrawProps): Promise<Either<RemoveUserFromDrawPossibleErrors, Draw>> => {
-    const drawResult = await this.getDrawByIdRepository.execute(drawId);
+    const drawResult = await this.getDrawByIdRepository.getById(drawId);
 
     if (drawResult.isLeft()) {
       return left(drawResult.value);
@@ -39,7 +39,7 @@ export class RemoveUserFromDraw implements IRemoveUserFromDraw {
       return left(new UserNotFoundInDrawEventError());
     }
 
-    const updateDrawResult = await this.updateDrawRepository.execute(draw);
+    const updateDrawResult = await this.updateDrawRepository.update(draw);
     if (updateDrawResult.isLeft()) {
       return left(updateDrawResult.value);
     }

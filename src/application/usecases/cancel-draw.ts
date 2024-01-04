@@ -18,7 +18,7 @@ export class CancelDraw implements ICancelDraw {
   execute = async ({
     drawId,
   }: CancelDrawProps): Promise<Either<CancelDrawPossibleErrors, void>> => {
-    const drawResult = await this.getDrawByIdRepository.execute(drawId);
+    const drawResult = await this.getDrawByIdRepository.getById(drawId);
     if (drawResult.isLeft()) {
       return left(drawResult.value);
     }
@@ -28,7 +28,7 @@ export class CancelDraw implements ICancelDraw {
       return left(new DrawNotFoundError());
     }
 
-    const removeDrawResult = await this.removeDrawRepository.execute(drawId);
+    const removeDrawResult = await this.removeDrawRepository.remove(drawId);
 
     if (removeDrawResult.isLeft()) {
       return left(removeDrawResult.value);

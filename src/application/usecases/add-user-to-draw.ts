@@ -21,7 +21,7 @@ export class AddUserToDraw implements IAddUserToDraw {
     drawId,
     user,
   }: AddUserToDrawProps): Promise<Either<AddUserToDrawPossibleErrors, Draw>> => {
-    const drawResult = await this.getDrawByIdRepository.execute(drawId);
+    const drawResult = await this.getDrawByIdRepository.getById(drawId);
     if (drawResult.isLeft()) {
       return left(drawResult.value);
     }
@@ -38,7 +38,7 @@ export class AddUserToDraw implements IAddUserToDraw {
 
     draw.users.add(user);
 
-    const updateDrawResult = await this.updateDrawRepository.execute(draw);
+    const updateDrawResult = await this.updateDrawRepository.update(draw);
     if (updateDrawResult.isLeft()) {
       return left(updateDrawResult.value);
     }

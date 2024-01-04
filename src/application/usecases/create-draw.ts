@@ -24,7 +24,7 @@ export class CreateDraw implements ICreateDraw {
       createdBy,
     });
 
-    const createdDrawResult = await this.createdrawRepository.execute(draw);
+    const createdDrawResult = await this.createdrawRepository.create(draw);
 
     if (createdDrawResult.isLeft()) {
       return left(createdDrawResult.value);

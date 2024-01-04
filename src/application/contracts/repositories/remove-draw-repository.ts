@@ -1,5 +1,5 @@
 import { Either, UnknownError } from '@/domain';
 
 export interface IRemoveDrawReository {
-  execute: (drawId: string) => Promise<Either<UnknownError, void>>;
+  remove: (drawId: string) => Promise<Either<UnknownError, void>>;
 }
