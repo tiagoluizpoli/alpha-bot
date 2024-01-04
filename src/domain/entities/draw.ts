@@ -1,7 +1,7 @@
 import { Entity, Team, User, Users } from '@/domain';
 
 export interface DrawProps {
-  teams?: Team[];
+  teams: Team[];
   users: Users;
   createdAt?: Date;
   createdBy: User;
@@ -15,8 +15,12 @@ export class Draw extends Entity<DrawProps> {
     super({ props, id });
   }
 
-  public get teams(): Team[] | undefined {
+  public get teams(): Team[] {
     return this.props.teams;
+  }
+
+  public set teams(teams: Team[]) {
+    this.props.teams = teams;
   }
 
   public get users(): Users {

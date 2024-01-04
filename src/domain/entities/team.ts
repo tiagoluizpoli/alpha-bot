@@ -2,7 +2,7 @@ import { Entity, Users } from '@/domain';
 
 export interface TeamProps {
   name: string;
-  users?: Users;
+  users: Users;
 }
 
 export class Team extends Entity<TeamProps> {
@@ -14,7 +14,7 @@ export class Team extends Entity<TeamProps> {
     return this.props.name;
   }
 
-  get users(): Users | undefined {
+  get users(): Users {
     return this.props.users;
   }
 
