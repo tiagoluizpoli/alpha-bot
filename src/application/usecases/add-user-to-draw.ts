@@ -1,4 +1,5 @@
 import {
+  AddUserToDrawPossibleErrors,
   AddUserToDrawProps,
   Draw,
   DrawNotFoundError,
@@ -15,13 +16,16 @@ export class AddUserToDraw implements IAddUserToDraw {
   execute = async ({
     drawId,
     user,
-  }: AddUserToDrawProps): Promise<Either<DrawNotFoundError, Draw>> => {
+  }: AddUserToDrawProps): Promise<Either<AddUserToDrawPossibleErrors, Draw>> => {
     const drawResult = await this.drawRepository.getById(drawId);
     if (drawResult.isLeft()) {
       return left(drawResult.value);
     }
 
     const draw = drawResult.value;
+    if (!draw) {
+      return left(new DrawNotFoundError());
+    }
 
     const userAlreadyInDrawEvent = draw.users.exists(user);
     if (userAlreadyInDrawEvent) {
