@@ -2,7 +2,7 @@ import { ApplicationCommandType } from 'discord.js';
 
 import { Command } from '@/interactions/components';
 import { makeCreateDraw } from '@/main/factories';
-import { Team, User, Users } from '@/domain';
+import { User } from '@/domain';
 
 export default new Command({
   name: 'create-draw',
@@ -17,25 +17,14 @@ export default new Command({
     const createDraw = makeCreateDraw();
 
     const drawResult = await createDraw.execute({
-      teams: [
-        Team.create({
-          name: 'Japorongas',
-          users: Users.create(),
-        }),
-        Team.create({
-          name: 'Minhocudos',
-          users: Users.create(),
-        }),
-      ],
+      teams: ['Japorongas', 'Minhocudos'],
       createdBy: User.create(
         {
           userName: username,
           displayName,
-          joinedAt: new Date(),
         },
         id,
       ),
-      users: [],
     });
 
     if (drawResult.isLeft()) {

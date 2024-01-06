@@ -1,8 +1,7 @@
-import { Draw, Either, Team, UnknownError, User } from '@/domain';
+import { Draw, Either, UnknownError, User } from '@/domain';
 
 export interface CreateDrawProps {
-  teams: Team[];
-  users: User[];
+  teams: string[];
   createdBy: User;
 }
 export type CreateDrawPossibleErrors = UnknownError;
