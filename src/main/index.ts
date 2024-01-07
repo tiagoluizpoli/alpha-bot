@@ -1,9 +1,7 @@
-import { ExtendedClient } from '@/interactions/extendedClient';
+import { createClient } from './client';
 
 export * from 'colors';
 
-const client = new ExtendedClient();
-
-void client.start();
+const client = createClient();
 
 export { client };
