@@ -90,14 +90,17 @@ export class CreateDrawCommand implements ICommandBuilder {
               });
 
               if (drawResult.isLeft()) {
-                await buttonInteraction.update({ content: drawResult.value.message });
+                await buttonInteraction.reply({
+                  ephemeral: true,
+                  content: drawResult.value.message,
+                });
                 return;
               }
 
               const draw = drawResult.value;
               await buttonInteraction.update({
                 content: messageMapper['display-draw-state'](draw),
-                components: [],
+                components: [joinRow],
               });
             },
           ],
