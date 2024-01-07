@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
+import { ButtonBuilder, ButtonStyle } from 'discord.js';
 
 export const joinButton = new ButtonBuilder({
   customId: 'join-button',
@@ -10,8 +10,4 @@ export const leaveButton = new ButtonBuilder({
   customId: 'leave-button',
   label: 'Leave draw',
   style: ButtonStyle.Danger,
-});
-
-export const joinRow = new ActionRowBuilder<ButtonBuilder>({
-  components: [joinButton, leaveButton],
 });

@@ -15,10 +15,10 @@ export class AddUserToDraw implements IAddUserToDraw {
   constructor(private readonly repository: AddUserToDrawRepositories) {}
 
   execute = async ({
-    drawId,
+    channelId,
     user,
   }: AddUserToDrawProps): Promise<Either<AddUserToDrawPossibleErrors, Draw>> => {
-    const drawResult = await this.repository.getById(drawId);
+    const drawResult = await this.repository.getByMessageId(channelId);
     if (drawResult.isLeft()) {
       return left(drawResult.value);
     }

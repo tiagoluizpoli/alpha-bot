@@ -1,6 +1,7 @@
 import { Entity, Team, User, Users } from '@/domain';
 
 export interface DrawProps {
+  channelId?: string;
   teams: Team[];
   users: Users;
   createdAt?: Date;
@@ -13,6 +14,14 @@ export class Draw extends Entity<DrawProps> {
       props.createdAt = new Date();
     }
     super({ props, id });
+  }
+
+  public get channelId(): string | undefined {
+    return this.props.channelId;
+  }
+
+  public set channelId(messageId: string) {
+    this.props.channelId = messageId;
   }
 
   public get teams(): Team[] {

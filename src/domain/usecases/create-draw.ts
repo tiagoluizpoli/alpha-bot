@@ -1,6 +1,7 @@
 import { Draw, Either, UnknownError, User } from '@/domain';
 
 export interface CreateDrawProps {
+  channelId: string;
   teams: string[];
   createdBy: User;
 }

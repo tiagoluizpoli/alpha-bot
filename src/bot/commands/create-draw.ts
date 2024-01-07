@@ -1,20 +1,27 @@
-import { ApplicationCommandOptionType, ApplicationCommandType, Collection } from 'discord.js';
+import {
+  ActionRowBuilder,
+  ApplicationCommandOptionType,
+  ApplicationCommandType,
+  ButtonBuilder,
+  Collection,
+} from 'discord.js';
 
 import { Command, CommandType, ICommandBuilder } from '../core';
 
-import { joinRow } from './buttons/buttons';
 import { messageMapper } from './helpers/message-mapper';
+import { mapUserDicordToEntity } from './helpers/draw-mappers';
+import { joinButton, leaveButton } from './buttons/buttons';
 
-import { Draw, IAddUserToDraw, ICreateDraw, User } from '@/domain';
+import { IAddUserToDraw, ICreateDraw, ISetMessageIdInDraw } from '@/domain';
 
 export class CreateDrawCommand implements ICommandBuilder {
   constructor(
     private readonly createDraw: ICreateDraw,
     private readonly addUserToDraw: IAddUserToDraw,
+    private readonly setMessageIdInDraw: ISetMessageIdInDraw,
   ) {}
 
   build = (): CommandType => {
-    let currentDraw: Draw | undefined;
     return Object.assign(
       new Command({
         name: 'create-draw',
@@ -29,79 +36,74 @@ export class CreateDrawCommand implements ICommandBuilder {
           },
         ],
         run: async ({ interaction, options }) => {
-          if (!interaction.isChatInputCommand()) return;
+          try {
+            // if (!interaction.isChatInputCommand()) return;
 
-          const { username, displayName, id } = interaction.user;
+            const teams = options.getString('teams', true);
+            const splittedTeams = teams.trim().split(',');
 
-          const teams = options.getString('teams', true);
-          const splittedTeams = teams.trim().split(',');
+            if (splittedTeams.length < 2) {
+              await interaction.reply({ content: 'The minimum amount of teams is 2' });
+              return;
+            }
 
-          if (splittedTeams.length < 2) {
-            await interaction.reply({ content: 'The minimum amount of teams is 2' });
-            return;
+            const { user, channelId } = interaction;
+
+            const drawResult = await this.createDraw.execute({
+              teams: splittedTeams,
+              createdBy: mapUserDicordToEntity(user),
+              channelId,
+            });
+
+            if (drawResult.isLeft()) {
+              await interaction.reply({ content: drawResult.value.message });
+              return;
+            }
+
+            const draw = drawResult.value;
+
+            const joinRow = new ActionRowBuilder<ButtonBuilder>({
+              components: [joinButton, leaveButton],
+            });
+
+            await interaction.reply({
+              content: messageMapper['display-draw-state'](draw),
+              components: [joinRow],
+            });
+          } catch (error) {
+            console.error(error);
           }
-
-          const drawResult = await this.createDraw.execute({
-            teams: splittedTeams,
-            createdBy: User.create(
-              {
-                userName: username,
-                displayName,
-              },
-              id,
-            ),
-          });
-
-          if (drawResult.isLeft()) {
-            await interaction.reply({ content: drawResult.value.message });
-            return;
-          }
-
-          const draw = drawResult.value;
-          currentDraw = draw;
-
-          await interaction.reply({
-            content: messageMapper['display-draw-state'](draw),
-            components: [joinRow],
-          });
         },
         buttons: new Collection([
           [
             'join-button',
             async (buttonInteraction) => {
-              if (!currentDraw) {
+              try {
+                const { user, channelId } = buttonInteraction;
+
+                const drawResult = await this.addUserToDraw.execute({
+                  channelId,
+                  user: mapUserDicordToEntity(user),
+                });
+
+                if (drawResult.isLeft()) {
+                  await buttonInteraction.reply({
+                    ephemeral: true,
+                    content: drawResult.value.message,
+                  });
+                  return;
+                }
+                const joinRow = new ActionRowBuilder<ButtonBuilder>({
+                  components: [joinButton, leaveButton],
+                });
+                const draw = drawResult.value;
                 await buttonInteraction.update({
-                  content: 'draw not initialized',
-                  components: [],
+                  content: messageMapper['display-draw-state'](draw),
+                  components: [joinRow],
                 });
-                return;
+              } catch (error) {
+                console.error(error);
               }
-              const { user } = buttonInteraction;
-
-              const drawResult = await this.addUserToDraw.execute({
-                drawId: currentDraw.id,
-                user: User.create(
-                  {
-                    userName: user.username,
-                    displayName: user.displayName,
-                  },
-                  user.id,
-                ),
-              });
-
-              if (drawResult.isLeft()) {
-                await buttonInteraction.reply({
-                  ephemeral: true,
-                  content: drawResult.value.message,
-                });
-                return;
-              }
-
-              const draw = drawResult.value;
-              await buttonInteraction.update({
-                content: messageMapper['display-draw-state'](draw),
-                components: [joinRow],
-              });
             },
           ],
         ]),
