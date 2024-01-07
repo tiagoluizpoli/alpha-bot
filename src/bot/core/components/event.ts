@@ -1,5 +1,7 @@
 import { ClientEvents } from 'discord.js';
 
+import { ExtendedClient } from '@/bot';
+
 export interface EventType<Key extends keyof ClientEvents> {
   name: Key;
   once?: boolean;
@@ -13,5 +15,5 @@ export class Event<T extends keyof ClientEvents> {
 }
 
 export interface IEventBuilder {
-  build: () => EventType<keyof ClientEvents>;
+  build: (client: ExtendedClient) => EventType<keyof ClientEvents>;
 }

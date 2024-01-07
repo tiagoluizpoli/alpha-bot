@@ -1,16 +1,13 @@
-import { ClientEvents } from 'discord.js';
-
 import {
   ComponentEventBuilder,
-  EventType,
-  ExtendedClient,
+  IEventBuilder,
   ReadyEventBuilder,
   SlashEventBuilder,
 } from '@/bot/core';
 
-export const makeEvents = (client: ExtendedClient): Array<EventType<keyof ClientEvents>> => {
-  const componenentEvent = new ComponentEventBuilder(client);
+export const makeEvents = (): IEventBuilder[] => {
+  const componenentEvent = new ComponentEventBuilder();
   const readyEvent = new ReadyEventBuilder();
-  const slashEvent = new SlashEventBuilder(client);
-  return [componenentEvent.build(), readyEvent.build(), slashEvent.build()];
+  const slashEvent = new SlashEventBuilder();
+  return [componenentEvent, readyEvent, slashEvent];
 };

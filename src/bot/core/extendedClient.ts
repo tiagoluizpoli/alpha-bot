@@ -15,7 +15,10 @@ import {
   ComponentsModal,
   ComponentsSelect,
   EventType,
+  ICommandBuilder,
 } from './components';
+
+import { IEventBuilder } from '@/bot';
 
 export class ExtendedClient extends Client {
   public commands = new Collection<string, CommandType>();
@@ -23,7 +26,11 @@ export class ExtendedClient extends Client {
   public selects: ComponentsSelect = new Collection();
   public modals: ComponentsModal = new Collection();
 
-  public constructor(private readonly botToken: string) {
+  public constructor(
+    private readonly botToken: string,
+    commands: ICommandBuilder[],
+    events: IEventBuilder[],
+  ) {
     super({
       intents: Object.keys(IntentsBitField.Flags) as BitFieldResolvable<
         GatewayIntentsString,
@@ -39,30 +46,25 @@ export class ExtendedClient extends Client {
         Partials.User,
       ],
     });
+    this.registerModules(commands.map((cmd) => cmd.build()));
+    this.registerEvents(events.map((event) => event.build(this)));
   }
 
-  public start = async (
-    commands: CommandType[],
-    events: Array<EventType<keyof ClientEvents>>,
-  ): Promise<void> => {
-    this.registerModules(commands);
-    this.registerEvents(events);
+  public start = async (): Promise<void> => {
     await this.login(this.botToken);
   };
 
   private readonly registerCommands = async (
     commands: ApplicationCommandDataResolvable[],
   ): Promise<void> => {
-    await this.application?.commands
-      .set(commands)
-      .then(() => {
-        console.info('✅ Slash commands (/) defined'.green);
-      })
-      .catch((error) => {
-        console.error(
-          `❌ An error occurred while trying to set the slash commmands (/): \n ${error}`.red,
-        );
-      });
+    try {
+      await this.application?.commands.set(commands);
+      console.info('✅ Slash commands (/) defined'.green);
+    } catch (error) {
+      console.error(
+        `❌ An error occurred while trying to set the slash commmands (/): \n ${error as any}`.red,
+      );
+    }
   };
 
   private readonly registerModules = (commands: CommandType[]): void => {
@@ -91,7 +93,7 @@ export class ExtendedClient extends Client {
   };
 
   private readonly registerEvents = (events: Array<EventType<keyof ClientEvents>>): void => {
-    events.forEach(({ name, run, once }) => {
+    events.forEach(async ({ name, run, once }) => {
       try {
         if (name) once ? this.once(name, run) : this.on(name, run);
       } catch (error) {

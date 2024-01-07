@@ -4,8 +4,8 @@ import { makeEvents } from './factories/event-factories/event-factory';
 
 import { ExtendedClient } from '@/bot/core/';
 
-export const createClient = (): ExtendedClient => {
-  const client = new ExtendedClient(env.botToken);
-  void client.start(makeDrawCommands(), makeEvents(client));
+export const createClient = async (): Promise<ExtendedClient> => {
+  const client = new ExtendedClient(env.botToken, makeDrawCommands(), makeEvents());
+  await client.start();
   return client;
 };
