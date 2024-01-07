@@ -3,12 +3,18 @@ import { ApplicationCommandOptionType, ApplicationCommandType, Collection } from
 import { Command, CommandType, ICommandBuilder } from '../core';
 
 import { joinRow } from './buttons/buttons';
+import { messageMapper } from './helpers/message-mapper';
 
-import { ICreateDraw, User } from '@/domain';
+import { Draw, IAddUserToDraw, ICreateDraw, User } from '@/domain';
 
 export class CreateDrawCommand implements ICommandBuilder {
-  constructor(private readonly createDraw: ICreateDraw) {}
+  constructor(
+    private readonly createDraw: ICreateDraw,
+    private readonly addUserToDraw: IAddUserToDraw,
+  ) {}
+
   build = (): CommandType => {
+    let currentDraw: Draw | undefined;
     return Object.assign(
       new Command({
         name: 'create-draw',
@@ -52,14 +58,10 @@ export class CreateDrawCommand implements ICommandBuilder {
           }
 
           const draw = drawResult.value;
+          currentDraw = draw;
 
           await interaction.reply({
-            content: `teams: ${draw.teams
-              .map((team) => team.name)
-              .join(', ')} \n users: ${draw.users
-              .getItems()
-              .map((user) => user.userName)
-              .join(', ')}`,
+            content: messageMapper['display-draw-state'](draw),
             components: [joinRow],
           });
         },
@@ -67,9 +69,34 @@ export class CreateDrawCommand implements ICommandBuilder {
           [
             'join-button',
             async (buttonInteraction) => {
+              if (!currentDraw) {
+                await buttonInteraction.update({
+                  content: 'draw not initialized',
+                  components: [],
+                });
+                return;
+              }
               const { user } = buttonInteraction;
+
+              const drawResult = await this.addUserToDraw.execute({
+                drawId: currentDraw.id,
+                user: User.create(
+                  {
+                    userName: user.username,
+                    displayName: user.displayName,
+                  },
+                  user.id,
+                ),
+              });
+
+              if (drawResult.isLeft()) {
+                await buttonInteraction.update({ content: drawResult.value.message });
+                return;
+              }
+
+              const draw = drawResult.value;
               await buttonInteraction.update({
-                content: `updated ${user.username}`,
+                content: messageMapper['display-draw-state'](draw),
                 components: [],
               });
             },

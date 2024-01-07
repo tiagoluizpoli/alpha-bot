@@ -1,5 +1,7 @@
 import fs from 'fs';
 
+import { DrawModel, mapDrawEntityToModel, mapDrawModelToEntity } from './draw-repository-mapper';
+
 import { Draw, Either, left, right, UnknownError } from '@/domain';
 import {
   ICreateDrawReository,
@@ -28,9 +30,13 @@ export class JsonFileDrawRepository implements Repositories {
     return await new Promise((resolve, reject) => {
       try {
         const data = fs.readFileSync(this.jsonFile, 'utf-8');
+        const parsedDraw = (JSON.parse(data) as DrawModel[]).map((draw) =>
+          mapDrawModelToEntity(draw),
+        );
 
-        resolve(right(JSON.parse(data) as Draw[]));
+        resolve(right(parsedDraw));
       } catch (error) {
+        console.error(error);
         reject(error);
       }
     });
@@ -39,7 +45,8 @@ export class JsonFileDrawRepository implements Repositories {
   private async writeData(items: Draw[]): Promise<void> {
     await new Promise<void>((resolve, reject) => {
       try {
-        fs.writeFileSync(this.jsonFile, JSON.stringify(items, null, 2));
+        const parsedDraw = items.map((draw) => mapDrawEntityToModel(draw));
+        fs.writeFileSync(this.jsonFile, JSON.stringify(parsedDraw, null, 2));
         resolve();
       } catch (error) {
         reject(error);
@@ -79,9 +86,11 @@ export class JsonFileDrawRepository implements Repositories {
 
       const index = items.findIndex((item) => item.id === draw.id);
 
-      if (!index) return left(new UnknownError());
+      if (index < 0) return left(new UnknownError());
 
       items[index] = draw;
+
+      await this.writeData(items);
 
       return right(items[index]);
     } catch (error) {

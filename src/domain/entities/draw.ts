@@ -31,7 +31,7 @@ export class Draw extends Entity<DrawProps> {
     return this.props.createdAt;
   }
 
-  public get createdBy(): User | undefined {
+  public get createdBy(): User {
     return this.props.createdBy;
   }
 
