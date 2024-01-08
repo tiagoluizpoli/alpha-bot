@@ -17,7 +17,7 @@
         "printWidth": 100,
         "useTabs": false,
         "singleQuote": true,
-        "semi": false
+        "semi": true
       }
     ],
     "@typescript-eslint/strict-boolean-expressions": "off",
@@ -62,12 +62,12 @@
       }
     ],
     "import/default": "off",
-    "import/no-default-export": "error",
     "import/newline-after-import": [
       "error",
       {
         "count": 1
       }
-    ]
+    ],
+    "no-useless-return": "off"
   }
 }
