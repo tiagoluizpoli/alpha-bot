@@ -37,7 +37,7 @@ export class CreateDrawCommand implements ICommandBuilder {
         ],
         run: async ({ interaction, options }) => {
           try {
-            // if (!interaction.isChatInputCommand()) return;
+            if (!interaction.isChatInputCommand()) return;
 
             const teams = options.getString('teams', true);
             const splittedTeams = teams.trim().split(',');
