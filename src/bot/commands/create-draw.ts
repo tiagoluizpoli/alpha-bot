@@ -106,6 +106,7 @@ export class CreateDrawCommand implements ICommandBuilder {
               }
             },
           ],
+          ['leave-button', (buttonInteraction) => {}],
         ]),
       }),
     );
