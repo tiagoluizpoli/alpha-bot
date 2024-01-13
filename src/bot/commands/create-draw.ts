@@ -1,8 +1,6 @@
 import {
-  ActionRowBuilder,
   ApplicationCommandOptionType,
   ApplicationCommandType,
-  ButtonBuilder,
   ButtonInteraction,
   CacheType,
   Collection,
@@ -12,15 +10,16 @@ import { Command, CommandProps, CommandType, ICommandBuilder } from '../core';
 
 import { messageMapper } from './helpers/message-mapper';
 import { mapUserDicordToEntity } from './helpers/draw-mappers';
-import { joinButton, leaveButton } from './buttons/buttons';
+import { buttonsRow } from './buttons/buttons';
 
-import { IAddUserToDraw, ICreateDraw, IRemoveUserFromDraw } from '@/domain';
+import { IAddUserToDraw, ICancelDraw, ICreateDraw, IRemoveUserFromDraw } from '@/domain';
 
 export class CreateDrawCommand implements ICommandBuilder {
   constructor(
     private readonly createDraw: ICreateDraw,
     private readonly addUserToDraw: IAddUserToDraw,
     private readonly removeUserFromDraw: IRemoveUserFromDraw,
+    private readonly cancelDraw: ICancelDraw,
   ) {}
 
   build = (): CommandType => {
@@ -41,6 +40,7 @@ export class CreateDrawCommand implements ICommandBuilder {
         buttons: new Collection([
           ['join-button', this.joinButton],
           ['leave-button', this.leaveButton],
+          ['cancel-draw-button', this.cancelDrawButton],
         ]),
       }),
     );
@@ -73,13 +73,9 @@ export class CreateDrawCommand implements ICommandBuilder {
 
       const draw = drawResult.value;
 
-      const joinRow = new ActionRowBuilder<ButtonBuilder>({
-        components: [joinButton, leaveButton],
-      });
-
       await interaction.reply({
         content: messageMapper['display-draw-state'](draw),
-        components: [joinRow],
+        components: [buttonsRow],
       });
     } catch (error) {
       console.error(error);
@@ -104,13 +100,12 @@ export class CreateDrawCommand implements ICommandBuilder {
         });
         return;
       }
-      const joinRow = new ActionRowBuilder<ButtonBuilder>({
-        components: [joinButton, leaveButton],
-      });
+
       const draw = drawResult.value;
+
       await buttonInteraction.update({
         content: messageMapper['display-draw-state'](draw),
-        components: [joinRow],
+        components: [buttonsRow],
       });
     } catch (error) {
       console.error(error);
@@ -135,16 +130,37 @@ export class CreateDrawCommand implements ICommandBuilder {
         });
         return;
       }
-      const joinRow = new ActionRowBuilder<ButtonBuilder>({
-        components: [joinButton, leaveButton],
-      });
+
       const draw = drawResult.value;
       await buttonInteraction.update({
         content: messageMapper['display-draw-state'](draw),
-        components: [joinRow],
+        components: [buttonsRow],
       });
     } catch (error) {
       console.error(error);
     }
+  };
+
+  private readonly cancelDrawButton = async (
+    buttonInteraction: ButtonInteraction<CacheType>,
+  ): Promise<void> => {
+    const { channelId } = buttonInteraction;
+
+    const cancelDrawResult = await this.cancelDraw.execute({
+      drawId: channelId,
+    });
+
+    if (cancelDrawResult.isLeft()) {
+      await buttonInteraction.reply({
+        ephemeral: true,
+        content: cancelDrawResult.value.message,
+      });
+    }
+
+    await buttonInteraction.message.delete();
+    await buttonInteraction.reply({
+      ephemeral: true,
+      content: 'draw canceled',
+    });
   };
 }
