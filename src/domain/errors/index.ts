@@ -4,3 +4,4 @@ export * from './user-already-in-draw-event-error';
 export * from './user-not-found-in-draw-event-error';
 export * from './invalid-team-count';
 export * from './draw-already-exists-error';
+export * from './draw-creator-cannot-be-removed-error';

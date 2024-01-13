@@ -1,5 +1,6 @@
 import {
   Draw,
+  DrawCreatorCannotBeRemovedError,
   DrawNotFoundError,
   Either,
   IRemoveUserFromDraw,
@@ -28,6 +29,10 @@ export class RemoveUserFromDraw implements IRemoveUserFromDraw {
 
     if (!draw) {
       return left(new DrawNotFoundError());
+    }
+
+    if (user.userName === draw.createdBy.userName) {
+      return left(new DrawCreatorCannotBeRemovedError());
     }
 
     draw.users.remove(user);
