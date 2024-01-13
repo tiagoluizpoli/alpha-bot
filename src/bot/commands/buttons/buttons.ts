@@ -18,6 +18,16 @@ export const cancelDrawButton = new ButtonBuilder({
   style: ButtonStyle.Danger,
 });
 
+export const doDrawButton = new ButtonBuilder({
+  customId: 'do-draw-button',
+  label: 'Draw',
+  style: ButtonStyle.Success,
+});
+
 export const buttonsRow = new ActionRowBuilder<ButtonBuilder>({
   components: [joinButton, leaveButton, cancelDrawButton],
+});
+
+export const drawRow = new ActionRowBuilder<ButtonBuilder>({
+  components: [doDrawButton],
 });

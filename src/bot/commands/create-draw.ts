@@ -11,7 +11,7 @@ import { Command, CommandProps, CommandType, ICommandBuilder } from '../core';
 
 import { messageMapper } from './helpers/message-mapper';
 import { mapUserDicordToEntity } from './helpers/draw-mappers';
-import { buttonsRow } from './buttons/buttons';
+import { buttonsRow, drawRow } from './buttons/buttons';
 
 import { IAddUserToDraw, ICancelDraw, ICreateDraw, IRemoveUserFromDraw } from '@/domain';
 
@@ -104,9 +104,10 @@ export class CreateDrawCommand implements ICommandBuilder {
 
       const draw = drawResult.value;
 
+      const drawRowConditional = draw.users.getItems().length > 1 ? [drawRow] : [];
       await buttonInteraction.update({
         content: messageMapper['display-draw-state'](draw),
-        components: [buttonsRow],
+        components: [buttonsRow, ...drawRowConditional],
       });
     } catch (error) {
       console.error(error);
@@ -131,11 +132,12 @@ export class CreateDrawCommand implements ICommandBuilder {
         });
         return;
       }
-
       const draw = drawResult.value;
+
+      const drawRowConditional = draw.users.getItems().length > 1 ? [drawRow] : [];
       await buttonInteraction.update({
         content: messageMapper['display-draw-state'](draw),
-        components: [buttonsRow],
+        components: [buttonsRow, ...drawRowConditional],
       });
     } catch (error) {
       console.error(error);
