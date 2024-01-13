@@ -36,7 +36,7 @@ export class DrawTeams implements IDrawTeams {
 
     draw.teams = teams;
 
-    await this.repository.update(draw);
+    await this.repository.remove(draw.id);
 
     return right(draw);
   };

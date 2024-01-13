@@ -200,10 +200,9 @@ export class CreateDrawCommand implements ICommandBuilder {
 
       const draw = drawTeamsResult.value;
 
-      const drawRowConditional = draw.users.getItems().length > 1 ? [drawRow] : [];
       await buttonInteraction.update({
         content: messageMapper['display-draw-state'](draw),
-        components: [buttonsRow, ...drawRowConditional],
+        components: [],
       });
     } catch (error) {
       console.error(error);
