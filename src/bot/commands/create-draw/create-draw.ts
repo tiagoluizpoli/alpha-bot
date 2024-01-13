@@ -7,7 +7,7 @@ import {
   GuildMemberRoleManager,
 } from 'discord.js';
 
-import { Command, CommandProps, CommandType, ICommandBuilder } from '../core';
+import { Command, CommandProps, CommandType, ICommandBuilder } from '../../core';
 
 import { messageMapper } from './helpers/message-mapper';
 import { mapUserDicordToEntity } from './helpers/draw-mappers';
