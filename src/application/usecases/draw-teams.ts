@@ -2,6 +2,7 @@ import {
   Draw,
   DrawNotFoundError,
   DrawTeamsProps,
+  DrawTeamsRepositories,
   Either,
   IDrawTeams,
   InvalidTeamCountError,
@@ -10,13 +11,12 @@ import {
   Team,
   User,
 } from '@/domain';
-import { IGetDrawByIdReository } from '@/application';
 
 export class DrawTeams implements IDrawTeams {
-  constructor(private readonly getDrawByIdRepository: IGetDrawByIdReository) {}
+  constructor(private readonly repository: DrawTeamsRepositories) {}
 
   execute = async ({ drawId }: DrawTeamsProps): Promise<Either<DrawNotFoundError, Draw>> => {
-    const drawResult = await this.getDrawByIdRepository.getById(drawId);
+    const drawResult = await this.repository.getById(drawId);
     if (drawResult.isLeft()) {
       return left(drawResult.value);
     }
@@ -35,6 +35,8 @@ export class DrawTeams implements IDrawTeams {
     const teams = teamsResult.value;
 
     draw.teams = teams;
+
+    await this.repository.update(draw);
 
     return right(draw);
   };

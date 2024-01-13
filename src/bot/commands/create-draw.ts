@@ -13,7 +13,13 @@ import { messageMapper } from './helpers/message-mapper';
 import { mapUserDicordToEntity } from './helpers/draw-mappers';
 import { buttonsRow, drawRow } from './buttons/buttons';
 
-import { IAddUserToDraw, ICancelDraw, ICreateDraw, IRemoveUserFromDraw } from '@/domain';
+import {
+  IAddUserToDraw,
+  ICancelDraw,
+  ICreateDraw,
+  IDrawTeams,
+  IRemoveUserFromDraw,
+} from '@/domain';
 
 export class CreateDrawCommand implements ICommandBuilder {
   constructor(
@@ -21,6 +27,7 @@ export class CreateDrawCommand implements ICommandBuilder {
     private readonly addUserToDraw: IAddUserToDraw,
     private readonly removeUserFromDraw: IRemoveUserFromDraw,
     private readonly cancelDraw: ICancelDraw,
+    private readonly drawTeams: IDrawTeams,
   ) {}
 
   build = (): CommandType => {
@@ -42,6 +49,7 @@ export class CreateDrawCommand implements ICommandBuilder {
           ['join-button', this.joinButton],
           ['leave-button', this.leaveButton],
           ['cancel-draw-button', this.cancelDrawButton],
+          ['draw-teams-button', this.drawTeamsButton],
         ]),
       }),
     );
@@ -149,7 +157,6 @@ export class CreateDrawCommand implements ICommandBuilder {
   ): Promise<void> => {
     const { channelId, user, member } = buttonInteraction;
 
-    console.log(member?.roles);
     const isAdmin = (member?.roles as GuildMemberRoleManager).cache.has('627529641120235520');
 
     const cancelDrawResult = await this.cancelDraw.execute({
@@ -171,5 +178,35 @@ export class CreateDrawCommand implements ICommandBuilder {
       ephemeral: true,
       content: 'draw canceled',
     });
+  };
+
+  private readonly drawTeamsButton = async (
+    buttonInteraction: ButtonInteraction<CacheType>,
+  ): Promise<void> => {
+    try {
+      const { channelId } = buttonInteraction;
+
+      const drawTeamsResult = await this.drawTeams.execute({
+        drawId: channelId,
+      });
+
+      if (drawTeamsResult.isLeft()) {
+        await buttonInteraction.reply({
+          ephemeral: true,
+          content: drawTeamsResult.value.message,
+        });
+        return;
+      }
+
+      const draw = drawTeamsResult.value;
+
+      const drawRowConditional = draw.users.getItems().length > 1 ? [drawRow] : [];
+      await buttonInteraction.update({
+        content: messageMapper['display-draw-state'](draw),
+        components: [buttonsRow, ...drawRowConditional],
+      });
+    } catch (error) {
+      console.error(error);
+    }
   };
 }

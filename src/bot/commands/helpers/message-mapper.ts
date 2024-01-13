@@ -5,7 +5,15 @@ type MessageNames = (typeof messageNames)[number];
 
 export const messageMapper: Record<MessageNames, (props: any) => string | string> = {
   'display-draw-state': (draw: Draw): string => {
-    return `teams: ${draw.teams.map((team) => team.name).join(', ')} \n users: ${draw.users
+    return `teams: \n${draw.teams
+      .map(
+        (team) =>
+          `${team.name}: [ ${team.users
+            .getItems()
+            .map((user) => user.displayName)
+            .join(',')} ]`,
+      )
+      .join()}\nusers: ${draw.users
       .getItems()
       .map((user) => user.userName)
       .join(', ')}`;

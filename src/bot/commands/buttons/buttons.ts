@@ -18,8 +18,8 @@ export const cancelDrawButton = new ButtonBuilder({
   style: ButtonStyle.Danger,
 });
 
-export const doDrawButton = new ButtonBuilder({
-  customId: 'do-draw-button',
+export const drawTeamsButton = new ButtonBuilder({
+  customId: 'draw-teams-button',
   label: 'Draw',
   style: ButtonStyle.Success,
 });
@@ -29,5 +29,5 @@ export const buttonsRow = new ActionRowBuilder<ButtonBuilder>({
 });
 
 export const drawRow = new ActionRowBuilder<ButtonBuilder>({
-  components: [doDrawButton],
+  components: [drawTeamsButton],
 });

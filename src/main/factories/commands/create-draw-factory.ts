@@ -2,6 +2,7 @@ import {
   makeAddUserToDraw,
   makeCancelDraw,
   makeCreateDraw,
+  makeDrawTeams,
   makeRemoveUserFromDraw,
 } from '../usecases';
 
@@ -14,6 +15,7 @@ export const makeDrawCommands = (): ICommandBuilder[] => {
     makeAddUserToDraw(),
     makeRemoveUserFromDraw(),
     makeCancelDraw(),
+    makeDrawTeams(),
   );
   return [createDraw];
 };
