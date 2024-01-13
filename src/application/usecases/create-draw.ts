@@ -1,6 +1,8 @@
 import {
   CreateDrawProps,
+  CreateDrawRepositories,
   Draw,
+  DrawAlreadyExistsError,
   Either,
   ICreateDraw,
   left,
@@ -9,16 +11,24 @@ import {
   UnknownError,
   Users,
 } from '@/domain';
-import { ICreateDrawReository } from '@/application';
 
 export class CreateDraw implements ICreateDraw {
-  constructor(private readonly createdrawRepository: ICreateDrawReository) {}
+  constructor(private readonly repository: CreateDrawRepositories) {}
 
   execute = async ({
     id,
     teams,
     createdBy,
   }: CreateDrawProps): Promise<Either<UnknownError, Draw>> => {
+    const drawExists = await this.repository.getById(id);
+    if (drawExists.isLeft()) {
+      return left(drawExists.value);
+    }
+
+    if (drawExists.value) {
+      return left(new DrawAlreadyExistsError());
+    }
+
     const draw = Draw.create(
       {
         users: Users.create([createdBy]),
@@ -33,7 +43,7 @@ export class CreateDraw implements ICreateDraw {
       id,
     );
 
-    const createdDrawResult = await this.createdrawRepository.create(draw);
+    const createdDrawResult = await this.repository.create(draw);
 
     if (createdDrawResult.isLeft()) {
       return left(createdDrawResult.value);

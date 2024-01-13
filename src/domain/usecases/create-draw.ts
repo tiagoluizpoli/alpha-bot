@@ -1,4 +1,4 @@
-import { ICreateDrawReository, IGetDrawByMessageIdReository } from '@/application';
+import { ICreateDrawReository, IGetDrawByIdReository } from '@/application';
 import { Draw, Either, UnknownError, User } from '@/domain';
 
 export interface CreateDrawProps {
@@ -7,7 +7,7 @@ export interface CreateDrawProps {
   createdBy: User;
 }
 export type CreateDrawPossibleErrors = UnknownError;
-export type CreateDrawRepositories = IGetDrawByMessageIdReository & ICreateDrawReository;
+export type CreateDrawRepositories = IGetDrawByIdReository & ICreateDrawReository;
 
 export interface ICreateDraw {
   execute: (props: CreateDrawProps) => Promise<Either<CreateDrawPossibleErrors, Draw>>;
