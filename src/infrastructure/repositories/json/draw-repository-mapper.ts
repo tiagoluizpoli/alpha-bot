@@ -16,7 +16,6 @@ export interface TeamModel extends BaseModel {
 }
 
 export interface DrawModel extends BaseModel {
-  channelId?: string;
   teams: TeamModel[];
   users: UserModel[];
   createdAt: Date;
@@ -56,7 +55,6 @@ export const mapTeamModelToEntity = ({ id, name, users }: TeamModel): Team => {
 
 export const mapDrawEntityToModel = ({
   id,
-  channelId,
   teams,
   users,
   createdBy,
@@ -67,7 +65,6 @@ export const mapDrawEntityToModel = ({
   }
   return {
     id,
-    channelId,
     users: users.getItems().map((user) => mapUserEntityToModel(user)),
     teams: teams.map((team) => mapTeamEntityToModel(team)),
     createdBy: mapUserEntityToModel(createdBy),
@@ -77,7 +74,6 @@ export const mapDrawEntityToModel = ({
 
 export const mapDrawModelToEntity = ({
   id,
-  channelId,
   teams,
   users,
   createdBy,
@@ -85,7 +81,6 @@ export const mapDrawModelToEntity = ({
 }: DrawModel): Draw => {
   return Draw.create(
     {
-      channelId,
       teams: teams.map((team) => mapTeamModelToEntity(team)),
       users: Users.create(users.map((user) => mapUserModelToEntity(user))),
       createdBy: mapUserModelToEntity(createdBy),

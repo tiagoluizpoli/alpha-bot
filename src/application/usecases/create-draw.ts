@@ -15,21 +15,23 @@ export class CreateDraw implements ICreateDraw {
   constructor(private readonly createdrawRepository: ICreateDrawReository) {}
 
   execute = async ({
+    id,
     teams,
     createdBy,
-    channelId,
   }: CreateDrawProps): Promise<Either<UnknownError, Draw>> => {
-    const draw = Draw.create({
-      channelId,
-      users: Users.create([createdBy]),
-      teams: teams.map((team) =>
-        Team.create({
-          name: team,
-          users: Users.create(),
-        }),
-      ),
-      createdBy,
-    });
+    const draw = Draw.create(
+      {
+        users: Users.create([createdBy]),
+        teams: teams.map((team) =>
+          Team.create({
+            name: team,
+            users: Users.create(),
+          }),
+        ),
+        createdBy,
+      },
+      id,
+    );
 
     const createdDrawResult = await this.createdrawRepository.create(draw);
 

@@ -3,6 +3,8 @@ import {
   ApplicationCommandOptionType,
   ApplicationCommandType,
   ButtonBuilder,
+  ButtonInteraction,
+  CacheType,
   Collection,
 } from 'discord.js';
 
@@ -12,13 +14,12 @@ import { messageMapper } from './helpers/message-mapper';
 import { mapUserDicordToEntity } from './helpers/draw-mappers';
 import { joinButton, leaveButton } from './buttons/buttons';
 
-import { IAddUserToDraw, ICreateDraw, ISetMessageIdInDraw } from '@/domain';
+import { IAddUserToDraw, ICreateDraw } from '@/domain';
 
 export class CreateDrawCommand implements ICommandBuilder {
   constructor(
     private readonly createDraw: ICreateDraw,
     private readonly addUserToDraw: IAddUserToDraw,
-    private readonly setMessageIdInDraw: ISetMessageIdInDraw,
   ) {}
 
   build = (): CommandType => {
@@ -50,9 +51,9 @@ export class CreateDrawCommand implements ICommandBuilder {
             const { user, channelId } = interaction;
 
             const drawResult = await this.createDraw.execute({
+              id: channelId,
               teams: splittedTeams,
               createdBy: mapUserDicordToEntity(user),
-              channelId,
             });
 
             if (drawResult.isLeft()) {
@@ -75,40 +76,41 @@ export class CreateDrawCommand implements ICommandBuilder {
           }
         },
         buttons: new Collection([
-          [
-            'join-button',
-            async (buttonInteraction) => {
-              try {
-                const { user, channelId } = buttonInteraction;
-
-                const drawResult = await this.addUserToDraw.execute({
-                  channelId,
-                  user: mapUserDicordToEntity(user),
-                });
-
-                if (drawResult.isLeft()) {
-                  await buttonInteraction.reply({
-                    ephemeral: true,
-                    content: drawResult.value.message,
-                  });
-                  return;
-                }
-                const joinRow = new ActionRowBuilder<ButtonBuilder>({
-                  components: [joinButton, leaveButton],
-                });
-                const draw = drawResult.value;
-                await buttonInteraction.update({
-                  content: messageMapper['display-draw-state'](draw),
-                  components: [joinRow],
-                });
-              } catch (error) {
-                console.error(error);
-              }
-            },
-          ],
+          ['join-button', this.joinButton],
           ['leave-button', (buttonInteraction) => {}],
         ]),
       }),
     );
+  };
+
+  private readonly joinButton = async (
+    buttonInteraction: ButtonInteraction<CacheType>,
+  ): Promise<any> => {
+    try {
+      const { user, channelId } = buttonInteraction;
+
+      const drawResult = await this.addUserToDraw.execute({
+        drawId: channelId,
+        user: mapUserDicordToEntity(user),
+      });
+
+      if (drawResult.isLeft()) {
+        await buttonInteraction.reply({
+          ephemeral: true,
+          content: drawResult.value.message,
+        });
+        return;
+      }
+      const joinRow = new ActionRowBuilder<ButtonBuilder>({
+        components: [joinButton, leaveButton],
+      });
+      const draw = drawResult.value;
+      await buttonInteraction.update({
+        content: messageMapper['display-draw-state'](draw),
+        components: [joinRow],
+      });
+    } catch (error) {
+      console.error(error);
+    }
   };
 }

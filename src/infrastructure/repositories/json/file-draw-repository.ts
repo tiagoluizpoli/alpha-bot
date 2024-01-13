@@ -6,7 +6,6 @@ import { Draw, Either, left, right, UnknownError } from '@/domain';
 import {
   ICreateDrawReository,
   IGetDrawByIdReository,
-  IGetDrawByMessageIdReository,
   IRemoveDrawReository,
   IUpdateDrawReository,
 } from '@/application';
@@ -14,8 +13,7 @@ import {
 type Repositories = ICreateDrawReository &
   IUpdateDrawReository &
   IRemoveDrawReository &
-  IGetDrawByIdReository &
-  IGetDrawByMessageIdReository;
+  IGetDrawByIdReository;
 
 export class JsonFileDrawRepository implements Repositories {
   constructor(private readonly jsonFile: string) {
@@ -132,25 +130,6 @@ export class JsonFileDrawRepository implements Repositories {
       const items = itemsResult.value;
 
       const foundItem = items.find((item) => item.id === drawId);
-
-      return right(foundItem);
-    } catch (error) {
-      console.error(error);
-
-      return left(new UnknownError());
-    }
-  };
-
-  getByMessageId = async (messageId: string): Promise<Either<UnknownError, Draw | undefined>> => {
-    try {
-      const itemsResult = await this.readData();
-      if (itemsResult.isLeft()) {
-        return left(itemsResult.value);
-      }
-
-      const items = itemsResult.value;
-
-      const foundItem = items.find((item) => item.channelId === messageId);
 
       return right(foundItem);
     } catch (error) {
