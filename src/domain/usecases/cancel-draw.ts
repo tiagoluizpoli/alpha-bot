@@ -1,8 +1,10 @@
 import { IGetDrawByIdReository, IRemoveDrawReository } from '@/application';
-import { DrawNotFoundError, Either } from '@/domain';
+import { DrawNotFoundError, Either, User } from '@/domain';
 
 export interface CancelDrawProps {
   drawId: string;
+  isAdmin: boolean;
+  user: User;
 }
 export type CancelDrawPossibleErrors = DrawNotFoundError;
 export type CancelDrawRepositories = IGetDrawByIdReository & IRemoveDrawReository;

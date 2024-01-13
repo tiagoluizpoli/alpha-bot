@@ -7,6 +7,7 @@ import {
   ICancelDraw,
   left,
   right,
+  UserNotDrawCreatorOrAdminError,
 } from '@/domain';
 
 export class CancelDraw implements ICancelDraw {
@@ -14,6 +15,8 @@ export class CancelDraw implements ICancelDraw {
 
   execute = async ({
     drawId,
+    isAdmin,
+    user,
   }: CancelDrawProps): Promise<Either<CancelDrawPossibleErrors, void>> => {
     const drawResult = await this.repositories.getById(drawId);
     if (drawResult.isLeft()) {
@@ -23,6 +26,10 @@ export class CancelDraw implements ICancelDraw {
     const draw = drawResult.value;
     if (!draw) {
       return left(new DrawNotFoundError());
+    }
+
+    if (!isAdmin && draw.createdBy.id !== user.id) {
+      return left(new UserNotDrawCreatorOrAdminError());
     }
 
     const removeDrawResult = await this.repositories.remove(drawId);

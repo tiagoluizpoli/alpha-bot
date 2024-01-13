@@ -4,6 +4,7 @@ import {
   ButtonInteraction,
   CacheType,
   Collection,
+  GuildMemberRoleManager,
 } from 'discord.js';
 
 import { Command, CommandProps, CommandType, ICommandBuilder } from '../core';
@@ -144,10 +145,15 @@ export class CreateDrawCommand implements ICommandBuilder {
   private readonly cancelDrawButton = async (
     buttonInteraction: ButtonInteraction<CacheType>,
   ): Promise<void> => {
-    const { channelId } = buttonInteraction;
+    const { channelId, user, member } = buttonInteraction;
+
+    console.log(member?.roles);
+    const isAdmin = (member?.roles as GuildMemberRoleManager).cache.has('627529641120235520');
 
     const cancelDrawResult = await this.cancelDraw.execute({
       drawId: channelId,
+      isAdmin,
+      user: mapUserDicordToEntity(user),
     });
 
     if (cancelDrawResult.isLeft()) {
@@ -155,6 +161,7 @@ export class CreateDrawCommand implements ICommandBuilder {
         ephemeral: true,
         content: cancelDrawResult.value.message,
       });
+      return;
     }
 
     await buttonInteraction.message.delete();
