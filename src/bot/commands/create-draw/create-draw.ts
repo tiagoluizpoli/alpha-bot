@@ -65,7 +65,11 @@ export class CreateDrawCommand implements ICommandBuilder {
       const splittedTeams = teams.trim().split(',');
 
       if (splittedTeams.length < 2) {
-        await interaction.reply({ content: 'O número mínimo de times é 2' });
+        await interaction.reply({ content: 'O número mínimo de times é 2', ephemeral: true });
+
+        setTimeout(async () => {
+          await interaction.deleteReply();
+        }, config.patterns.draw.ephemeralReplayDelay * 1000);
         return;
       }
 
@@ -78,7 +82,10 @@ export class CreateDrawCommand implements ICommandBuilder {
       });
 
       if (drawResult.isLeft()) {
-        await interaction.reply({ content: drawResult.value.message });
+        await interaction.reply({ content: drawResult.value.message, ephemeral: true });
+        setTimeout(async () => {
+          await interaction.deleteReply();
+        }, config.patterns.draw.ephemeralReplayDelay * 1000);
         return;
       }
 
@@ -109,6 +116,9 @@ export class CreateDrawCommand implements ICommandBuilder {
           ephemeral: true,
           content: drawResult.value.message,
         });
+        setTimeout(async () => {
+          await buttonInteraction.deleteReply();
+        }, config.patterns.draw.ephemeralReplayDelay * 1000);
         return;
       }
 
@@ -140,6 +150,9 @@ export class CreateDrawCommand implements ICommandBuilder {
           ephemeral: true,
           content: drawResult.value.message,
         });
+        setTimeout(async () => {
+          await buttonInteraction.deleteReply();
+        }, config.patterns.draw.ephemeralReplayDelay * 1000);
         return;
       }
       const draw = drawResult.value;
@@ -175,6 +188,9 @@ export class CreateDrawCommand implements ICommandBuilder {
         ephemeral: true,
         content: cancelDrawResult.value.message,
       });
+      setTimeout(async () => {
+        await buttonInteraction.deleteReply();
+      }, config.patterns.draw.ephemeralReplayDelay * 1000);
       return;
     }
 
