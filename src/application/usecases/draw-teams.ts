@@ -34,7 +34,7 @@ export class DrawTeams implements IDrawTeams {
 
     const teams = teamsResult.value;
 
-    draw.teams = teams;
+    draw.endDraw(teams);
 
     await this.repository.remove(draw.id);
 

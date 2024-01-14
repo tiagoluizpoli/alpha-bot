@@ -9,7 +9,7 @@ import {
 
 import { Command, CommandProps, CommandType, ICommandBuilder } from '../../core';
 
-import { messageMapper } from './helpers/message-mapper';
+import { embededMapper } from './helpers/message-mapper';
 import { mapUserDicordToEntity } from './helpers/draw-mappers';
 import { buttonsRow, drawRow } from './buttons/buttons';
 
@@ -83,8 +83,8 @@ export class CreateDrawCommand implements ICommandBuilder {
       const draw = drawResult.value;
 
       await interaction.reply({
-        content: messageMapper['display-draw-state'](draw),
         components: [buttonsRow],
+        embeds: [embededMapper['display-draw-state'](draw)],
       });
     } catch (error) {
       console.error(error);
@@ -114,8 +114,8 @@ export class CreateDrawCommand implements ICommandBuilder {
 
       const drawRowConditional = draw.users.getItems().length > 1 ? [drawRow] : [];
       await buttonInteraction.update({
-        content: messageMapper['display-draw-state'](draw),
         components: [buttonsRow, ...drawRowConditional],
+        embeds: [embededMapper['display-draw-state'](draw)],
       });
     } catch (error) {
       console.error(error);
@@ -144,8 +144,8 @@ export class CreateDrawCommand implements ICommandBuilder {
 
       const drawRowConditional = draw.users.getItems().length > 1 ? [drawRow] : [];
       await buttonInteraction.update({
-        content: messageMapper['display-draw-state'](draw),
         components: [buttonsRow, ...drawRowConditional],
+        embeds: [embededMapper['display-draw-state'](draw)],
       });
     } catch (error) {
       console.error(error);
@@ -201,8 +201,8 @@ export class CreateDrawCommand implements ICommandBuilder {
       const draw = drawTeamsResult.value;
 
       await buttonInteraction.update({
-        content: messageMapper['display-draw-state'](draw),
         components: [],
+        embeds: [embededMapper['display-draw-state'](draw)],
       });
     } catch (error) {
       console.error(error);
