@@ -187,10 +187,15 @@ export class CreateDrawCommand implements ICommandBuilder {
     buttonInteraction: ButtonInteraction<CacheType>,
   ): Promise<void> => {
     try {
-      const { channelId } = buttonInteraction;
+      const { channelId, member, user } = buttonInteraction;
 
+      const isAdmin = (member as GuildMember)?.permissions.has(
+        PermissionsBitField.Flags.Administrator,
+      );
       const drawTeamsResult = await this.drawTeams.execute({
         drawId: channelId,
+        isAdmin,
+        user: mapUserDicordToEntity(user),
       });
 
       if (drawTeamsResult.isLeft()) {

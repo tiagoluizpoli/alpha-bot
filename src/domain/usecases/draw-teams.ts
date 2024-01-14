@@ -1,10 +1,22 @@
 import { IGetDrawByIdReository, IRemoveDrawReository, IUpdateDrawReository } from '@/application';
-import { Draw, DrawNotFoundError, Either, InvalidTeamCountError } from '@/domain';
+import {
+  Draw,
+  DrawNotFoundError,
+  Either,
+  InvalidTeamCountError,
+  User,
+  UserNotDrawCreatorOrAdminError,
+} from '@/domain';
 
 export interface DrawTeamsProps {
   drawId: string;
+  isAdmin: boolean;
+  user: User;
 }
-export type DrawTeamsPossibleErrors = DrawNotFoundError | InvalidTeamCountError;
+export type DrawTeamsPossibleErrors =
+  | DrawNotFoundError
+  | InvalidTeamCountError
+  | UserNotDrawCreatorOrAdminError;
 export type DrawTeamsRepositories = IGetDrawByIdReository &
   IUpdateDrawReository &
   IRemoveDrawReository;

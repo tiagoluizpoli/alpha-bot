@@ -10,12 +10,17 @@ import {
   right,
   Team,
   User,
+  UserNotDrawCreatorOrAdminError,
 } from '@/domain';
 
 export class DrawTeams implements IDrawTeams {
   constructor(private readonly repository: DrawTeamsRepositories) {}
 
-  execute = async ({ drawId }: DrawTeamsProps): Promise<Either<DrawNotFoundError, Draw>> => {
+  execute = async ({
+    drawId,
+    isAdmin,
+    user,
+  }: DrawTeamsProps): Promise<Either<DrawNotFoundError, Draw>> => {
     const drawResult = await this.repository.getById(drawId);
     if (drawResult.isLeft()) {
       return left(drawResult.value);
@@ -24,6 +29,10 @@ export class DrawTeams implements IDrawTeams {
     const draw = drawResult.value;
     if (!draw) {
       return left(new DrawNotFoundError());
+    }
+
+    if (!isAdmin && draw.createdBy.id !== user.id) {
+      return left(new UserNotDrawCreatorOrAdminError());
     }
 
     const users = draw.users.getItems();
