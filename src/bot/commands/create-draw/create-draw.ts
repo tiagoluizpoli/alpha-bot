@@ -35,13 +35,13 @@ export class CreateDrawCommand implements ICommandBuilder {
   build = (): CommandType => {
     return Object.assign(
       new Command({
-        name: 'create-draw',
+        name: 'sortear-times',
         description: 'Cria um novo sorteio de usuários',
         type: ApplicationCommandType.ChatInput,
         options: [
           {
-            name: 'teams',
-            description: 'Teams separated by commas ","',
+            name: 'times',
+            description: 'Times separados por ","',
             type: ApplicationCommandOptionType.String,
             required: true,
           },
@@ -61,11 +61,11 @@ export class CreateDrawCommand implements ICommandBuilder {
     try {
       if (!interaction.isChatInputCommand()) return;
 
-      const teams = options.getString('teams', true);
+      const teams = options.getString('times', true);
       const splittedTeams = teams.trim().split(',');
 
       if (splittedTeams.length < 2) {
-        await interaction.reply({ content: 'The minimum amount of teams is 2' });
+        await interaction.reply({ content: 'O número mínimo de times é 2' });
         return;
       }
 
@@ -181,7 +181,7 @@ export class CreateDrawCommand implements ICommandBuilder {
     await buttonInteraction.message.delete();
     await buttonInteraction.reply({
       ephemeral: true,
-      content: 'draw canceled',
+      content: 'Sorteio de times cancelado',
     });
 
     setTimeout(async () => {
