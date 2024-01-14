@@ -4,7 +4,8 @@ import {
   ButtonInteraction,
   CacheType,
   Collection,
-  GuildMemberRoleManager,
+  GuildMember,
+  PermissionsBitField,
 } from 'discord.js';
 
 import { Command, CommandProps, CommandType, ICommandBuilder } from '../../core';
@@ -157,7 +158,9 @@ export class CreateDrawCommand implements ICommandBuilder {
   ): Promise<void> => {
     const { channelId, user, member } = buttonInteraction;
 
-    const isAdmin = (member?.roles as GuildMemberRoleManager).cache.has('627529641120235520');
+    const isAdmin = (member as GuildMember)?.permissions.has(
+      PermissionsBitField.Flags.Administrator,
+    );
 
     const cancelDrawResult = await this.cancelDraw.execute({
       drawId: channelId,
