@@ -10,7 +10,7 @@ import {
 
 import { Command, CommandProps, CommandType, ICommandBuilder } from '../../core';
 
-import { embededMapper } from './helpers/message-mapper';
+import { embededMapper } from './helpers/embeded-mapper';
 import { mapUserDicordToEntity } from './helpers/draw-mappers';
 import { buttonsRow, drawRow } from './buttons/buttons';
 
