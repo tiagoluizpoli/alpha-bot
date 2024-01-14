@@ -2,25 +2,25 @@ import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 
 export const joinButton = new ButtonBuilder({
   customId: 'join-button',
-  label: 'Join draw',
+  label: 'Participar',
   style: ButtonStyle.Primary,
 });
 
 export const leaveButton = new ButtonBuilder({
   customId: 'leave-button',
-  label: 'Leave draw',
+  label: 'Abandonar (pussy)',
   style: ButtonStyle.Danger,
 });
 
 export const cancelDrawButton = new ButtonBuilder({
   customId: 'cancel-draw-button',
-  label: 'Cancel draw',
+  label: 'Cancelar sorteio',
   style: ButtonStyle.Danger,
 });
 
 export const drawTeamsButton = new ButtonBuilder({
   customId: 'draw-teams-button',
-  label: 'Draw',
+  label: 'Sortear',
   style: ButtonStyle.Success,
 });
 
