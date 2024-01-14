@@ -1,6 +1,15 @@
-import { ApplicationCommandOptionType, ApplicationCommandType, GuildMember } from 'discord.js';
+import {
+  ApplicationCommandOptionType,
+  ApplicationCommandType,
+  ChatInputCommandInteraction,
+  Collection,
+  GuildMember,
+  GuildTextBasedChannel,
+  Message,
+} from 'discord.js';
 
 import { Command, CommandType, ICommandBuilder } from '@/bot/core';
+import { config } from '@/main/config';
 
 export class ClearMessages implements ICommandBuilder {
   build = (): CommandType => {
@@ -50,38 +59,59 @@ export class ClearMessages implements ICommandBuilder {
               return;
             }
 
-            void channel
-              .bulkDelete(messages, true)
-              .then(async (cleared) => {
-                await interaction.editReply({
-                  content: `Foram limpas ${cleared.size} mensagens em ${mention.displayName}`,
-                });
-              })
-              .catch(async (error) => {
-                console.error(error);
-                await interaction.editReply({
-                  content: `Ocorreu um erro ao tentar limpar as mensagens em ${mention.displayName}`,
-                });
-              });
+            await this.bulkDelete({
+              channel,
+              interaction,
+              messages,
+              content: `Foram limpas [size] mensagens em ${mention.displayName}`,
+              errorContent: `Ocorreu um erro ao tentar limpar as mensagens de ${mention.displayName}`,
+            });
 
             return;
           }
 
-          void channel
-            .bulkDelete(messages.first(ammount), true)
-            .then(async (cleared) => {
-              await interaction.editReply({
-                content: `Foram limpas ${cleared.size} mensagens em ${channel.name}`,
-              });
-            })
-            .catch(async (error) => {
-              console.error(error);
-              await interaction.editReply({
-                content: `Ocorreu um erro ao tentar limpar as mensagens em ${channel.name}`,
-              });
-            });
+          await this.bulkDelete({
+            channel,
+            interaction,
+            messages,
+            content: `Foram limpas [size] mensagens em ${channel.name}`,
+            errorContent: `Ocorreu um erro ao tentar limpar as mensagens de ${channel.name}`,
+          });
         },
       }),
     );
   };
+
+  private readonly bulkDelete = async ({
+    interaction,
+    channel,
+    messages,
+    content,
+    errorContent,
+  }: BulkDelete): Promise<void> => {
+    await channel
+      .bulkDelete(messages, true)
+      .then(async (cleared) => {
+        await interaction.editReply({
+          content: content.replace('[size]', cleared.size.toString()),
+        });
+        setTimeout(async () => {
+          await interaction.deleteReply();
+        }, config.patterns.draw.ephemeralReplayDelay * 1000);
+      })
+      .catch(async (error) => {
+        console.error(error);
+        await interaction.editReply({
+          content: errorContent,
+        });
+      });
+  };
+}
+
+interface BulkDelete {
+  interaction: ChatInputCommandInteraction<'cached'>;
+  messages: Array<Message<true>> | Collection<string, Message<true>>;
+  channel: GuildTextBasedChannel;
+  content: string;
+  errorContent: string;
 }
