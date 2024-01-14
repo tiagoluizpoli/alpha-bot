@@ -186,7 +186,7 @@ export class CreateDrawCommand implements ICommandBuilder {
 
     setTimeout(async () => {
       await buttonInteraction.deleteReply();
-    }, config.patterns.draw.cancel.fadeReplyDelay * 1000);
+    }, config.patterns.draw.ephemeralReplayDelay * 1000);
   };
 
   private readonly drawTeamsButton = async (
