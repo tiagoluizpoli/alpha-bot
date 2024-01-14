@@ -7,6 +7,9 @@ export const config = {
   patterns: {
     draw: {
       maxDuration: 5,
+      cancel: {
+        fadeReplyDelay: 10,
+      },
     },
   },
 };

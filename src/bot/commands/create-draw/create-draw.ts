@@ -21,6 +21,7 @@ import {
   IDrawTeams,
   IRemoveUserFromDraw,
 } from '@/domain';
+import { config } from '@/main/config';
 
 export class CreateDrawCommand implements ICommandBuilder {
   constructor(
@@ -144,6 +145,7 @@ export class CreateDrawCommand implements ICommandBuilder {
       const draw = drawResult.value;
 
       const drawRowConditional = draw.users.getItems().length > 1 ? [drawRow] : [];
+
       await buttonInteraction.update({
         components: [buttonsRow, ...drawRowConditional],
         embeds: [embededMapper['display-draw-state'](draw)],
@@ -181,6 +183,10 @@ export class CreateDrawCommand implements ICommandBuilder {
       ephemeral: true,
       content: 'draw canceled',
     });
+
+    setTimeout(async () => {
+      await buttonInteraction.deleteReply();
+    }, config.patterns.draw.cancel.fadeReplyDelay * 1000);
   };
 
   private readonly drawTeamsButton = async (
